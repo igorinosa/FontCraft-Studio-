@@ -1,0 +1,140 @@
+<div class="h-screen w-screen flex flex-col bg-slate-950 text-slate-100 overflow-hidden font-sans">
+  <!-- Top Navigation & Studio Header -->
+  <app-header
+    (openExport)="isExportModalOpen.set(true)"
+    (openSvgModal)="isSvgModalOpen.set(true)"
+    (openKerningModal)="state.openKerningModal()"
+  />
+
+  <!-- Main Studio Workspace -->
+  <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative min-h-0">
+    <!-- Desktop Left Sidebar / Mobile Drawer Toolbar -->
+    <app-toolbar />
+
+    <!-- Center Workspace -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden min-w-0 relative">
+      <!-- DESKTOP VIEW: Docked Layout (Visible on md and up) -->
+      <div class="hidden md:flex flex-col flex-1 h-full min-h-0">
+        <app-vector-canvas
+          class="flex-1 min-h-0 flex flex-col"
+          (openSvgModal)="isSvgModalOpen.set(true)"
+          (openKerningModal)="state.openKerningModal()"
+        />
+        <app-glyph-selector />
+        <app-live-tester />
+      </div>
+
+      <!-- MOBILE VIEW: Dedicated Uncluttered Tabs (Visible on < md) -->
+      <div class="md:hidden flex flex-col flex-1 h-full min-h-0 overflow-hidden">
+        <!-- 1. Active Drawing Canvas Tab -->
+        @if (state.mobileTab() === 'canvas') {
+          <div class="flex-1 flex flex-col min-h-0 overflow-hidden">
+            <app-vector-canvas
+              class="flex-1 min-h-0 flex flex-col"
+              (openSvgModal)="isSvgModalOpen.set(true)"
+              (openKerningModal)="state.openKerningModal()"
+            />
+          </div>
+        }
+
+        <!-- 2. Glyphs Catalog Tab -->
+        @if (state.mobileTab() === 'glyphs') {
+          <div class="flex-1 flex flex-col min-h-0 overflow-y-auto p-3 bg-slate-950">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-white text-sm">Character Set &amp; Naming</span>
+              <button
+                type="button"
+                (click)="state.setMobileTab('canvas')"
+                class="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 text-xs font-bold"
+              >
+                Done
+              </button>
+            </div>
+            <app-glyph-selector class="block" />
+          </div>
+        }
+
+        <!-- 3. Live Type Tester Tab -->
+        @if (state.mobileTab() === 'tester') {
+          <div class="flex-1 flex flex-col min-h-0 overflow-y-auto p-3 bg-slate-950">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-bold text-white text-sm">Type Tester Playground</span>
+              <button
+                type="button"
+                (click)="state.setMobileTab('canvas')"
+                class="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 text-xs font-bold"
+              >
+                Back to Canvas
+              </button>
+            </div>
+            <app-live-tester class="block flex-1" />
+          </div>
+        }
+
+        <!-- Mobile Bottom Navigation Bar -->
+        <nav class="bg-slate-900 border-t border-slate-800 px-3 py-1.5 flex items-center justify-around shrink-0 z-20">
+          <button
+            type="button"
+            (click)="state.setMobileTab('canvas')"
+            [class]="state.mobileTab() === 'canvas' ? 'text-amber-400 bg-slate-800/80 font-bold' : 'text-slate-400'"
+            class="flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl text-[11px] transition-colors"
+          >
+            <mat-icon class="text-lg">draw</mat-icon>
+            <span>Canvas</span>
+          </button>
+
+          <button
+            type="button"
+            (click)="state.setMobileTab('glyphs')"
+            [class]="state.mobileTab() === 'glyphs' ? 'text-amber-400 bg-slate-800/80 font-bold' : 'text-slate-400'"
+            class="flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl text-[11px] transition-colors"
+          >
+            <mat-icon class="text-lg">grid_view</mat-icon>
+            <span>Glyphs ({{ state.completedGlyphCount() }})</span>
+          </button>
+
+          <button
+            type="button"
+            (click)="state.setMobileTab('tester')"
+            [class]="state.mobileTab() === 'tester' ? 'text-amber-400 bg-slate-800/80 font-bold' : 'text-slate-400'"
+            class="flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl text-[11px] transition-colors"
+          >
+            <mat-icon class="text-lg">text_fields</mat-icon>
+            <span>Type Test</span>
+          </button>
+        </nav>
+      </div>
+    </main>
+  </div>
+
+  <!-- Export Modal Dialog -->
+  @if (isExportModalOpen()) {
+    <app-export-modal (closeModal)="isExportModalOpen.set(false)" />
+  }
+
+  <!-- SVG Code Inspector & Import Modal -->
+  @if (isSvgModalOpen()) {
+    <app-svg-modal (closeModal)="isSvgModalOpen.set(false)" />
+  }
+
+  <!-- Font Kerning Manager Modal -->
+  @if (state.isKerningModalOpen()) {
+    <app-kerning-modal />
+  }
+
+  <!-- Auto-Trace Bitmap Vectorizer Modal -->
+  @if (state.isAutoTraceModalOpen()) {
+    <app-auto-trace-modal />
+  }
+
+  <!-- Character Set Preview & Unicode Coverage Modal -->
+  @if (state.isCharacterSetModalOpen()) {
+    <app-character-set-modal />
+  }
+
+  <!-- Glyph Revision History Timeline Drawer -->
+  @if (state.isHistoryDrawerOpen()) {
+    <app-history-drawer />
+  }
+</div>
+

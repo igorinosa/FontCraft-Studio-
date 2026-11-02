@@ -1,0 +1,6 @@
+{
+  "name": "FontCraft Studio - Vector Font Maker & SVG Exporter",
+  "description": "Intuitive client-side vector font creator and SVG export studio. Draw custom letters, adjust metrics, test live, and export to TTF, SVG fonts, and individual vector glyphs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
